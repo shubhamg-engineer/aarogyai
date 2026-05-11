@@ -11,9 +11,11 @@ load_dotenv()
 
 # ── Groq Client ───────────────────────────────────────────────────────────────
 try:
-    api_key = os.getenv("GROQ_API_KEY")
+    # Check Streamlit secrets first, then fallback to environment variables
+    api_key = st.secrets.get("GROQ_API_KEY") if "GROQ_API_KEY" in st.secrets else os.getenv("GROQ_API_KEY")
+    
     if not api_key:
-        st.error("⚠️ GROQ_API_KEY not found in .env file!")
+        st.error("⚠️ GROQ_API_KEY not found in Streamlit Secrets or .env file! Please add it to your Streamlit Cloud Secrets.")
         st.stop()
     client = Groq(api_key=api_key)
 except Exception as e:
